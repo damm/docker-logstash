@@ -1,0 +1,68 @@
+input {
+
+  redis {
+    data_type => 'list'
+    host => 'REDIS_PORT_6379_TCP_ADDR'
+    port => 'REDIS_PORT_6379_TCP_PORT'
+    key => 'logstash:logstash'
+    threads => '8'
+    codec => 'json'
+  }
+
+  udp {
+    port => '514'
+    type => 'syslog'
+  }
+
+  tcp {
+    port => '514'
+    type => 'syslog'
+  }
+}
+
+filter {
+if [type] == 'apache' {
+   json {
+        source => "message"
+        }
+
+  }
+   geoip {
+         database => "/opt/logstash/server/GeoLiteCity.dat"
+         source => "client"
+         } 
+
+if [type] == 'syslog' {
+  grok {
+    patterns_dir => '/opt/logstash/server/etc/patterns'
+    match => [ "message", '<%{POSINT:syslog_pri}>%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:[%{POSINT:syslog_pid}])?: %{GREEDYDATA:syslog_message}' ]
+  }
+
+  syslog_pri {
+  }
+
+  date {
+    match => ['MMM  d HH:mm:ss', 'MMM dd HH:mm:ss', 'ISO8601']
+  }
+
+  if !("_grokparsefailure" in [tags]) {
+  mutate {
+    replace => ['source_host', '%{syslog_hostname}']
+  }
+
+  mutate {
+    replace => ['message', '%{syslog_message}']
+  }
+}
+}
+}
+
+
+output {
+  elasticsearch_http {
+    flush_size => '1'
+    host => 'ES_PORT_9200_TCP_ADDR'
+    index => 'logstash-%{+YYYY.MM.dd}'
+    port => 'ES_PORT_9200_TCP_PORT'
+  }
+}
