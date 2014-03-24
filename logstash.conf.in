@@ -28,7 +28,7 @@ if [type] == 'apache' {
 
   }
    geoip {
-         database => "/opt/logstash/server/GeoLiteCity.dat"
+         database => "/opt/logstash/lib/GeoLiteCity.dat"
          source => "client"
          } 
 
@@ -59,7 +59,8 @@ if [type] == 'syslog' {
 
 
 output {
-  elasticsearch_http {
+  elasticsearch {
+    protocol => "http"
     flush_size => '1'
     host => 'ES_PORT_9200_TCP_ADDR'
     index => 'logstash-%{+YYYY.MM.dd}'

@@ -1,9 +1,13 @@
 FROM damm/java
 MAINTAINER <scott@likens.us>
-RUN mkdir -p /opt/logstash/server/{lib,etc,log,tmp,bin}
-ADD https://download.elasticsearch.org/logstash/logstash/logstash-1.3.3-flatjar.jar /opt/logstash/server/lib/logstash-1.3.3-flatjar.jar
-ADD logstash.conf.in /opt/logstash/server/etc/logstash.conf.in
-ADD GeoLiteCity.dat /opt/logstash/server/GeoLiteCity.dat
+RUN apt-get update && apt-get install wget -y
+RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.0.tar.gz -O /var/tmp/logstash-1.4.0.tar.gz
+RUN cd /opt;tar zxf /var/tmp/logstash-1.4.0.tar.gz && mv /opt/logstash-1.4.0 /opt/logstash
+RUN ls /opt
+RUN ls /opt/logstash
+RUN mkdir -p /opt/logstash/{etc,tmp,log}
+ADD logstash.conf.in /opt/logstash/etc/logstash.conf.in
+ADD GeoLiteCity.dat /opt/logstash/lib/GeoLiteCity.dat
 ADD run.sh /run.sh
 EXPOSE 514/udp
 EXPOSE 514
