@@ -1,8 +1,8 @@
 FROM damm/java
 MAINTAINER <scott@likens.us>
 RUN apt-get update && apt-get install wget -y
-RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.0.tar.gz -O /var/tmp/logstash-1.4.0.tar.gz
-RUN cd /opt;tar zxf /var/tmp/logstash-1.4.0.tar.gz && mv /opt/logstash-1.4.0 /opt/logstash
+RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.1.tar.gz -O /var/tmp/logstash-1.4.1.tar.gz
+RUN cd /opt;tar zxf /var/tmp/logstash-1.4.1.tar.gz && mv /opt/logstash-1.4.1 /opt/logstash
 RUN ls /opt
 RUN ls /opt/logstash
 RUN mkdir -p /opt/logstash/{etc,tmp,log}
