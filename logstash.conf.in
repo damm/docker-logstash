@@ -25,12 +25,34 @@ if [type] == 'apache' {
    json {
         source => "message"
         }
-
   }
    geoip {
          database => "/opt/logstash/lib/GeoLiteCity.dat"
          source => "client"
-         } 
+        }     
+
+if [type] == 'exim' {
+  grok {
+   patterns_dir => '/opt/logstash/server/etc/patterns'
+    break_on_match => false
+    keep_empty_captures => true
+    match => [
+      "message", "(%{SYSLOGBASE} )(%{EXIM_DATE:exim_date} )(%{EXIM_PID:exim_pid} )(%{EXIM_MSGID:exim_msg_id} )(%{EXIM_FLAGS:exim_flags} )(%{GREEDYDATA})"
+    ]
+    match => [
+      "message", "(%{EXIM_MSGID} )(<= )(%{NOTSPACE:env_sender} )(%{EXIM_REMOTE_HOST} )?(%{EXIM_INTERFACE} )?(%{EXIM_PROTOCOL} )?(X=%{NOTSPACE:tls_info} )?(%{EXIM_MSG_SIZE} )?(%{EXIM_HEADER_ID} )?(%{EXIM_SUBJECT})"
+    ]
+    match => [
+      "message", "(%{EXIM_MSGID} )([=-]> )(%{NOTSPACE:env_rcpt} )(<%{NOTSPACE:env_rcpt_outer}> )?(R=%{NOTSPACE:exim_router} )(T=%{NOTSPACE:exim_transport} )(%{EXIM_REMOTE_HOST} )(X=%{NOTSPACE:tls_info} )?(QT=%{EXIM_QT:exim_qt})"
+    ]
+    match => [
+      "message", "(%{SYSLOGBASE} )(%{EXIM_DATE:exim_date} )(%{EXIM_PID:exim_pid} )(%{EXIM_MSGID:exim_msg_id} )(Completed )(QT=%{EXIM_QT:exim_qt})"
+    ]
+    match => [
+      "message", "(%{SYSLOGBASE} )(%{EXIM_DATE:exim_date} )(%{EXIM_PID:exim_pid} )(%{EXIM_MSGID:exim_msg_id} )?(%{EXIM_REMOTE_HOST} )?(%EXIM_INTERFACE} )?(F=<%{NOTSPACE:env_sender}> )?(.+(rejected after DATA|rejected \(but fed to sa-learn\)|rejected [A-Z]+ (or [A-Z]+ %{NOTSPACE}?|<%{NOTSPACE:env_rcpt}>)?): (?<exim_rej_reason>.+))"
+    ]
+  }
+  }
 
 if [type] == 'syslog' {
   grok {
@@ -52,11 +74,11 @@ if [type] == 'syslog' {
 
   mutate {
     replace => ['message', '%{syslog_message}']
+    }
   }
-}
-}
-}
+ }   
 
+}
 
 output {
   elasticsearch {
