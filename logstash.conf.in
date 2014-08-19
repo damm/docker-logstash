@@ -26,6 +26,9 @@ if [type] == 'apache' {
         source => "message"
         }
   }
+  mutate {
+    convert => [ "duration_usec", "float" ]
+  }
    geoip {
          database => "/opt/logstash/lib/GeoLiteCity.dat"
          source => "client"
