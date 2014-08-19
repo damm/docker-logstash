@@ -1,0 +1,35 @@
+{
+    "containers": [
+        {
+            "name": "redis",
+            "image": "damm/redis",
+            "groups": ["redis","logstash"],
+            "run": {
+                "detach": true,
+                "publish": ["127.0.0.1:6379:6379"]
+                }
+        },
+        {
+            "name": "elasticsearch",
+            "image": "damm/elasticsearch",
+            "groups": ["elasticsearch","logstash"],
+            "run": {
+                "detach": true,
+                "privileged": true,
+                "publish": ["9200:9200"],
+                "env": ["ES_MIN_MEM=1g","ES_MAX_MEM=1g"],
+                "volume": ["/data/elasticsearch/shared:/data/elasticsearch/shared"]
+                }
+        },
+        {
+            "name": "logstash",
+            "image": "damm/logstash",
+            "groups": ["logstash"],
+            "run": {
+                "detach": true,
+                "publish": ["514:5114","514:5114/udp"],
+                "link": ["redis:redis","elasticsearch:es"]
+            }
+        }
+    ]
+}
