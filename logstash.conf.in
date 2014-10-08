@@ -100,7 +100,7 @@ if [type] == 'syslog' {
 output {
   elasticsearch {
     protocol => "http"
-    flush_size => '1'
+    flush_size => '100'
     host => 'ES_PORT_9200_TCP_ADDR'
     index => 'logstash-%{+YYYY.MM.dd}'
     port => 'ES_PORT_9200_TCP_PORT'
