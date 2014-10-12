@@ -39,11 +39,17 @@ if [type] == 'apache' {
         pattern => "%{DATE} %{TIME} %{HOSTNAME:msgid} (=>|Completed)"
         what => "previous"
       }
-      grok {
-        break_on_match => false
-        match => [
-          "message", "<= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\]"
-        ]
+      multiline {
+        pattern => "%{DATE} %{TIME} %{GREEDYDATA:msgid} => %{GREEDYDATA:replyto} <%{GREEDYDATA:to}> R=%{WORD:router} T=%{WORD:action} H=%{GREEDYDATA:remotehost} \[%{IP:client}] X=%{GREEDYDATA:cipher} C=%{GREEDYDATA:response} QT=%{INT:queuetime}s"
+        what => "previous"
+      }
+      multiline {
+        pattern => "%{DATE} %{TIME} <= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\] P=%{WORD:protocol} S=%{INT:size} id=%{GREEDYDATA:msgid} T=%{GREEDYDATA:subject}"
+        what => "previous"
+      }
+      multiline {
+        pattern => "%{DATE} %{TIME} %{GREEDYDATA:spool} <= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\] P=%{WORD:protocol} S=%{INT:size} id=%{GREEDYDATA:msgid} T=%{GREEDYDATA:subject}"
+        what => "previous"
       }
       grok {
         break_on_match => false
@@ -51,7 +57,12 @@ if [type] == 'apache' {
           "message", "=> %{USERNAME:to} <%{NOTSPACE:dest}> R=%{WORD:transport}"
         ]
       }
-
+      grok {
+        break_on_match => false
+        match => [
+          "message", "<= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\]"
+        ]
+      }
       grok {
         break_on_match => false
         match => [

@@ -7,7 +7,7 @@ RUN cd /opt;tar zxf /var/tmp/logstash-${VERSION}.tar.gz && mv /opt/logstash-${VE
 RUN ls /opt
 RUN ls /opt/logstash
 RUN mkdir -p /opt/logstash/{etc,tmp,log}
-ADD logstash.conf.in /opt/logstash/etc/logstash.conf.in
+ONBUILD ADD logstash.conf.in /opt/logstash/etc/logstash.conf.in
 ADD GeoLiteCity.dat /opt/logstash/lib/GeoLiteCity.dat
 ADD patterns/exim /opt/logstash/patterns/exim
 ADD run.sh /run.sh
