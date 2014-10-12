@@ -34,54 +34,6 @@ if [type] == 'apache' {
          source => "client"
         }     
 
-  if [type] == "exim" {
-      multiline {
-        pattern => "%{DATE} %{TIME} %{HOSTNAME:msgid} (=>|Completed)"
-        what => "previous"
-      }
-      multiline {
-        pattern => "%{DATE} %{TIME} %{GREEDYDATA:msgid} => %{GREEDYDATA:replyto} <%{GREEDYDATA:to}> R=%{WORD:router} T=%{WORD:action} H=%{GREEDYDATA:remotehost} \[%{IP:client}] X=%{GREEDYDATA:cipher} C=%{GREEDYDATA:response} QT=%{INT:queuetime}s"
-        what => "previous"
-      }
-      multiline {
-        pattern => "%{DATE} %{TIME} <= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\] P=%{WORD:protocol} S=%{INT:size} id=%{GREEDYDATA:msgid} T=%{GREEDYDATA:subject}"
-        what => "previous"
-      }
-      multiline {
-        pattern => "%{DATE} %{TIME} %{GREEDYDATA:spool} <= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\] P=%{WORD:protocol} S=%{INT:size} id=%{GREEDYDATA:msgid} T=%{GREEDYDATA:subject}"
-        what => "previous"
-      }
-      grok {
-        break_on_match => false
-        match => [
-          "message", "=> %{USERNAME:to} <%{NOTSPACE:dest}> R=%{WORD:transport}"
-        ]
-      }
-      grok {
-        break_on_match => false
-        match => [
-          "message", "<= %{NOTSPACE:from} H=%{NOTSPACE:server} \[%{IP:client}\]"
-        ]
-      }
-      grok {
-        break_on_match => false
-        match => [
-          "message", "=> %{NOTSPACE:dest} R=%{WORD:transport}"
-        ]
-     }
-      grok {
-        break_on_match => false
-        match => [
-          "message", "%{DATE} %{TIME} H=%{NOTSPACE:server}%{GREEDYDATA} \[%{IP:client}\] F=<%{NOTSPACE:mail_to}> temporarily rejected RCPT <%{NOTSPACE:dest}>: greylisted"
-        ]
-      }
-   geoip {
-         database => "/opt/logstash/lib/GeoLiteCity.dat"
-         source => "client"
-        }     
-
-}
-
 if [type] == 'syslog' {
   grok {
     patterns_dir => '/opt/logstash/server/etc/patterns'
