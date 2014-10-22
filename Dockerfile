@@ -9,7 +9,7 @@ RUN ls /opt/logstash
 RUN mkdir -p /opt/logstash/{etc,tmp,log}
 ONBUILD ADD logstash.conf.in /opt/logstash/etc/logstash.conf.in
 ADD GeoLiteCity.dat /opt/logstash/lib/GeoLiteCity.dat
-ADD patterns/exim /opt/logstash/patterns/exim
+ONBUILD ADD patterns /opt/logstash/patterns
 ADD run.sh /run.sh
 EXPOSE 514/udp
 EXPOSE 514
