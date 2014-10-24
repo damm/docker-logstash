@@ -6,6 +6,7 @@
             "groups": ["redis","logstash"],
             "run": {
                 "detach": true,
+                "privileged": true,
                 "publish": ["127.0.0.1:6379:6379"]
                 }
         },
