@@ -24,7 +24,7 @@
         },
         {
             "name": "logstash",
-            "image": "damm/logstash",
+            "image": "mine/logstash",
             "groups": ["logstash"],
             "run": {
                 "detach": true,
