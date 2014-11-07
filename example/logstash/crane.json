@@ -1,0 +1,46 @@
+{
+    "containers": [
+        {
+            "name": "influxdb",
+            "dockerfile": "./docker/docker-influxdb",
+            "image": "damm/influxdb",
+            "groups": ["influxdb"],
+            "run": {
+                "detach": true,
+                "publish": ["127.0.0.1:2013:2003","8083:8083","8084:8084","8086:8086"],
+                "volume": ["/opt/influxdb/shared:/opt/influxdb/shared","/etc/ssl/private/likens.pem:/cert.pem"]
+            }
+        },
+        {
+            "name": "redis",
+            "image": "damm/redis",
+            "groups": ["redis","logstash"],
+            "run": {
+                "detach": true,
+                "publish": ["127.0.0.1:6379:6379"]
+                }
+        },
+        {
+            "name": "elasticsearch",
+            "image": "damm/elasticsearch",
+            "groups": ["elasticsearch","logstash"],
+            "run": {
+                "detach": true,
+                "privileged": true,
+                "publish": ["10.1.10.199:9200:9200"],
+                "env": ["ES_MIN_MEM=1g","ES_MAX_MEM=1g"],
+                "volume": ["/data/elasticsearch/shared:/data/elasticsearch/shared"]
+                }
+        },
+        {
+            "name": "logstash",
+            "image": "damm/logstash-mine",
+            "groups": ["logstash"],
+            "run": {
+                "detach": true,
+                "publish": ["514:514","514:514/udp"],
+                "link": ["redis:redis","elasticsearch:es"]
+            }
+        }
+    ]
+}
