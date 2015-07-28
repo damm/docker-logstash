@@ -1,7 +1,7 @@
 FROM damm/java8
 MAINTAINER <scott@likens.us>
 RUN apt-get update && apt-get install wget -y
-ENV VERSION 1.5.2
+ENV VERSION 1.5.3
 RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-${VERSION}.tar.gz -O /var/tmp/logstash-${VERSION}.tar.gz
 RUN cd /opt;tar zxf /var/tmp/logstash-${VERSION}.tar.gz && mv /opt/logstash-${VERSION} /opt/logstash
 RUN ls /opt
