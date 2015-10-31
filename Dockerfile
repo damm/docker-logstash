@@ -1,8 +1,9 @@
 FROM damm/java8
 MAINTAINER <scott@likens.us>
 RUN apt-get update && apt-get install wget -y
-ENV VERSION 1.5.4
-RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-${VERSION}.tar.gz -O /var/tmp/logstash-${VERSION}.tar.gz
+ENV VERSION 2.0.0
+RUN wget https://download.elastic.co/logstash/logstash/logstash-${VERSION}.tar.gz -O /var/tmp/logstash-${VERSION}.tar.gz
+#RUN wget https://download.elasticsearch.org/logstash/logstash/logstash-${VERSION}.tar.gz -O /var/tmp/logstash-${VERSION}.tar.gz
 RUN cd /opt;tar zxf /var/tmp/logstash-${VERSION}.tar.gz && mv /opt/logstash-${VERSION} /opt/logstash
 RUN ls /opt
 RUN ls /opt/logstash
