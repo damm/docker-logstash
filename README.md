@@ -1,7 +1,11 @@
+### Build status
+
+[![Build Status](https://travis-ci.org/damm/docker-logstash.png)](https://travis-ci.org/damm/docker-logstash)
+
 Logstash
 =========
 
-This image is one way to deploy Logstash using [Docker][docker].  It uses [damm/java][dammjava] to provide Java.
+This image is one way to deploy Logstash using [Docker][docker].  It uses [damm/java8][dammjava8] to provide Java.
 
 Requirements
 =============
@@ -32,7 +36,7 @@ docker run -d -name logstash -p 514:514/tcp -p 514:514/udp -link redis:redis -li
 ```
 
 [docker]: http://www.docker.io
-[dammjava]: http://github.com/damm/docker-java
+[dammjava8]: http://github.com/damm/docker-java8
 [dammelasticsearch]: http://github.com/damm/docker-elasticsearch
 [dammredis]: http://github.com/damm/damm-redis
 
